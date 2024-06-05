@@ -47,6 +47,8 @@ $(document).ready(function(){
             },
             success:function(response){
                 console.log(response)
+                progressBar.innerHTML = response.message
+                cancelBox.classList.add('invisible')
             },
             error:function(error){
                 console.log('error occured',error)

@@ -47,6 +47,9 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'core.urls'
 
+DATA_UPLOAD_MAX_MEMORY_SIZE = 52428800  # 50 MB or higher
+FILE_UPLOAD_MAX_MEMORY_SIZE = 52428800  # 50 MB or higher
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -68,6 +71,7 @@ WSGI_APPLICATION = 'core.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
+
 
 DATABASES = {
     'default': {
