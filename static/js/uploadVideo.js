@@ -49,6 +49,7 @@ $(document).ready(function(){
                 console.log(response)
                 progressBar.innerHTML = response.message
                 cancelBox.classList.add('invisible')
+                window.location.href = response.redirect_url;
             },
             error:function(error){
                 console.log('error occured',error)

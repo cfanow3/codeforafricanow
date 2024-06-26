@@ -1,9 +1,42 @@
 
 from pathlib import Path
 import os
+import json
+from google.oauth2 import service_account
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Check if running in Render.com environment
+if 'RENDER' in os.environ:
+    # Get the JSON content from the environment variable
+    credentials_info = json.loads(os.environ['GOOGLE_APPLICATION_CREDENTIALS_JSON'])
+
+    # Define a path for the temporary credentials file
+    temp_credentials_path = os.path.join(BASE_DIR, 'credentials.json')
+
+    # Write the JSON content to the temporary file
+    with open(temp_credentials_path, 'w') as temp_credentials_file:
+        json.dump(credentials_info, temp_credentials_file)
+
+    # Load credentials from the temporary file
+    credentials = service_account.Credentials.from_service_account_file(temp_credentials_path)
+
+    # Clean up the temporary file if desired
+    os.remove(temp_credentials_path)
+else:
+    # Load your service account credentials locally
+    with open(os.path.join(BASE_DIR, 'cfacode/cfacredentials.json')) as f:
+        credentials_info = json.load(f)
+
+    credentials = service_account.Credentials.from_service_account_info(credentials_info)
+
+GOOGLE_DRIVE_STORAGE_JSON_KEY_FILE = os.path.join(BASE_DIR, 'credentials.json')
+DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
+GS_BUCKET_NAME = 'media'
+GS_CREDENTIALS = credentials
+
 
 
 # Quick-start development settings - unsuitable for production

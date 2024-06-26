@@ -133,13 +133,14 @@ def upload(request):
             # vid = request.FILES('id_content')[0]
             #clip = VideoFileClip(vid.temporary_file_path())
             #obj.duration = clip.duration
-            print()
+            print(obj)
             #obj.save(clip.duration)
             data={
             'error': False, 
-            'message': 'Uploaded Successfully'
+            'message': 'Uploaded Successfully',
+            'redirect_url': '/courses/'
             }
-            return JsonResponse(data, safe=False)
+            return JsonResponse(data, safe=False, )
         else:
             return JsonResponse({'error': True, 'errors': 'Error occured'})
     else:
