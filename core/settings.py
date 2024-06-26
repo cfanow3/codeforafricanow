@@ -139,7 +139,7 @@ AUTH_USER_MODEL = 'cfa.User'
 
 
 # Check if running in Render.com environment
-if 'RENDER' in os.environ:
+if os.environ['GOOGLE_APPLICATION_CREDENTIALS_JSON']:
     # Get the JSON content from the environment variable
     credentials_info = json.loads(os.environ['GOOGLE_APPLICATION_CREDENTIALS_JSON'])
 
