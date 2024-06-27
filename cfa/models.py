@@ -5,10 +5,7 @@ from PIL import Image
 from django.dispatch import receiver
 from django.db.models.signals import post_save
 from django.core.files.storage import default_storage as storage
-from gdstorage.storage import GoogleDriveStorage
 
-# Define Google Drive Storage
-gd_storage = GoogleDriveStorage()
 
 
 # Create your models here.
@@ -21,8 +18,8 @@ class Courses(models.Model):
     course_name = models.CharField(max_length=120)
     user = models.ForeignKey(User, null=True, on_delete=models.CASCADE, related_name='course_user')
     description = models.TextField()
-    course_picture = models.ImageField(default="default.png", null=True, blank=True, upload_to='course_pics', storage=gd_storage)
-    course_banner = models.ImageField( default="default.png", null=True, blank=True, upload_to='course_banner_pics', storage=gd_storage)
+    course_picture = models.ImageField(default="default.png", null=True, blank=True, upload_to='course_pics')
+    course_banner = models.ImageField( default="default.png", null=True, blank=True, upload_to='course_banner_pics')
 
     def __str__(self):
         return f"{self.course_name}"
@@ -30,10 +27,10 @@ class Courses(models.Model):
     
 class Content(models.Model):
     content_name = models.CharField(max_length=120)
-    content = models.FileField(upload_to='uploaded_content', storage=gd_storage)
+    content = models.FileField(upload_to='uploaded_content')
     about = models.TextField(max_length=120)
     course_name = models.ForeignKey(Courses, on_delete=models.CASCADE, related_name='course_content')
-    thumbnail = models.ImageField(default="default.png", null=True, blank=True, upload_to='content_thumbnail', storage=gd_storage)
+    thumbnail = models.ImageField(default="default.png", null=True, blank=True, upload_to='content_thumbnail')
     date = models.DateField(auto_now=True)
     # duration = models.CharField(max_length=120)
 
@@ -47,7 +44,7 @@ class Content(models.Model):
    
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    image = models.ImageField(default='default.PNG',null=True, blank=True, upload_to='profile_pics', storage=gd_storage)
+    image = models.ImageField(default='default.PNG',null=True, blank=True, upload_to='profile_pics')
 
     def __str__(self):
         return f'{self.user.username} Profile'
@@ -56,21 +53,14 @@ class Profile(models.Model):
     def save(self, *args, **kwargs):
         super(Profile, self).save(*args, **kwargs)
 
-        # Open the image using the storage backend
-        try:
-            with gd_storage.open(self.image.name, 'rb') as f:
-                img = Image.open(f)
-                if img.height > 300 or img.width > 300:
-                    output_size = (300, 300)
-                    img.thumbnail(output_size)
-                    img.save(self.image.name)
+        # img = Image.open(self.image.name)
+        img = Image.open(storage.open(self.image.path))
+        
+        if img.height > 300 or img.width > 300:
+            output_size = (300, 300)
+            img.thumbnail(output_size)
+            img.save(self.image.name)
 
-            super().save(*args, **kwargs)
-
-        except FileNotFoundError:
-            # Handle file not found error
-            # Example: fallback to default image or log the error
-            pass
 
 @receiver(post_save, sender=User)
 def create_profile(sender, created, instance, **kwargs):
