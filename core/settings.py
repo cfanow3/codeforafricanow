@@ -2,7 +2,7 @@
 from pathlib import Path
 import os
 import json
-from google.oauth2 import service_account
+import dj_database_url
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -76,12 +76,20 @@ WSGI_APPLICATION = 'core.wsgi.application'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+
+# Replace the SQLite DATABASES configuration with PostgreSQL:
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+    'default': dj_database_url.config(        
+        default='postgresql://codeforafrica_user:V1XvepbmKGQUgPHFHnKyHRFNx5WfAPzT@dpg-cpultftds78s73dvresg-a/codeforafrica',       
+        conn_max_age=600
+        )
     }
-}
 
 
 # Password validation
