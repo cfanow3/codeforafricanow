@@ -130,7 +130,9 @@ def upload(request):
         if form.is_valid():
             obj = form.save()
             # print(request.FILES)
-           
+            # vid = request.FILES('id_content')[0]
+            #clip = VideoFileClip(vid.temporary_file_path())
+            #obj.duration = clip.duration
             print(obj)
             #obj.save(clip.duration)
             data={
